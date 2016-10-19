@@ -11,8 +11,8 @@ with open('credentials.json') as f:
 client_id = credentials["client_id"]
 client_secret = credentials["client_secret"]
 
-repository = "PrestaShop/PrestaShop"
-prs_url = "https://api.github.com/repos/" + repository + "/pulls?per_page=100&state=closed&direction=desc&base=develop"
+repository = "neo4j/neo4j"
+prs_url = "https://api.github.com/repos/" + repository + "/pulls?per_page=100&state=closed&direction=desc&base=3.1"
 url = prs_url + "&client_id=" + client_id + "&client_secret=" + client_secret
 
 response = requests.get(url)

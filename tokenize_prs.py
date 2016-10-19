@@ -6,6 +6,9 @@ import requests
 driver = GraphDatabase.driver("bolt://localhost", auth=basic_auth("",""), encrypted=False)
 session = driver.session()
 
+repository = "neo4j/neo4j"
+branch = "3.1"
+
 default_tagger = nltk.data.load(nltk.tag._POS_TAGGER)
 punctuations = list(string.punctuation)
 stemmer = nltk.stem.porter.PorterStemmer()
@@ -21,9 +24,14 @@ def tokenize_words(s):
 def normalize(text):
     return stemmer_tokens(nltk.word_tokenize(text.lower().translate(punctuation_map)))
 
-pr_template_url = "https://raw.githubusercontent.com/PrestaShop/PrestaShop/develop/.github/PULL_REQUEST_TEMPLATE.md"
-response = requests.get(pr_template_url).text
-blacklist = normalize(response)
+pr_template_url = "https://raw.githubusercontent.com/" + repository + "/" + branch + "/.github/PULL_REQUEST_TEMPLATE.md"
+response = requests.get(pr_template_url)
+if response.status_code == 200:
+    blacklist = normalize(response.text)
+else:
+    blacklist = []
+
+# tokenize pull request title and description and persist them as tags
 
 result = session.run('''MATCH (pr:PullRequest)<-[:PR_COMMENT*0..1]-(comment)
 RETURN pr.number as number, reduce(text = "", x IN collect(comment) | text + (coalesce(x.title,'') + '.' + x.body + '.')) AS text''')

@@ -11,7 +11,7 @@ with open('credentials.json') as f:
 client_id = credentials["client_id"]
 client_secret = credentials["client_secret"]
 
-repository = "PrestaShop/PrestaShop"
+repository = "neo4j/neo4j"
 contents_url = "https://api.github.com/repos/" + repository + "/contents/"
 
 def getDirectoryContent(path):
